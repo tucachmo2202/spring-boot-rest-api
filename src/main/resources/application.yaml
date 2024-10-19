@@ -14,3 +14,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+jwt:
+  signerKey: "OzthgcXnnCNdj/YcBTD9zEiyGdL/PbSd0PFFhA9SG8Gae+lT2qVf3RzaPRQ3IuQ3"
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.foxifyart.rest_service: DEBUG

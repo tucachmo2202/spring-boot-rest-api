@@ -2,29 +2,38 @@ package com.foxifyart.rest_service.service;
 
 import com.foxifyart.rest_service.dto.request.UserCreationRequest;
 import com.foxifyart.rest_service.dto.request.UserUpdateRequest;
+import com.foxifyart.rest_service.dto.response.UserResponse;
 import com.foxifyart.rest_service.entity.Users;
 import com.foxifyart.rest_service.exception.AppException;
 import com.foxifyart.rest_service.exception.ErrorCode;
+import com.foxifyart.rest_service.mapper.UserMapper;
 import com.foxifyart.rest_service.repository.UserRepository;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
+    UserMapper userMapper;
 
     public Users createUser(UserCreationRequest request) {
-        Users user = new Users();
 
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
+        Users user = userMapper.toUser(request);
 
-        user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
     }
@@ -33,16 +42,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Users getUserWithId(String userId) {
+    public Users getUser(String userId) {
         return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User " + userId + " not found"));
     }
 
-    public Users updateUser(String userId, UserUpdateRequest userInfo) {
-        Users user = this.getUserWithId(userId);
-        user.setPassword(userInfo.getPassword());
-        user.setUsername(userInfo.getUsername());
+    public UserResponse getUserWithId(String userId) {
+        return userMapper.toUserResponse(getUser(userId));
+    }
 
-        return userRepository.save(user);
+    public UserResponse updateUser(String userId, UserUpdateRequest userInfo) {
+        Users user = getUser(userId);
+
+        userMapper.updateUser(user, userInfo);
+
+        Users userUpdated = userRepository.save(user);
+
+        return userMapper.toUserResponse(userUpdated);
     }
 
     public void deleteUser(String userId) {

@@ -1,4 +1,4 @@
-package com.foxifyart.rest_service.dto.request;
+package com.foxifyart.rest_service.dto.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,8 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse <T> {
-    private int code;
-    private String message;
-    private T result;
+public class AuthenticationResponse {
+    boolean authenticated;
+    String token;
 }

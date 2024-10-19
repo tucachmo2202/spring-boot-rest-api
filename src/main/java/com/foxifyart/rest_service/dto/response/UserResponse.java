@@ -1,18 +1,15 @@
-package com.foxifyart.rest_service.dto.request;
+package com.foxifyart.rest_service.dto.response;
 
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserUpdateRequest {
-
-    @Size(min = 3, message = "Username must be at least 3 characters")
+public class UserResponse {
+    String id;
     String username;
     String password;
 }
