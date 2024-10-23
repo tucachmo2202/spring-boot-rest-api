@@ -4,6 +4,7 @@ import com.foxifyart.rest_service.dto.request.UserCreationRequest;
 import com.foxifyart.rest_service.dto.request.UserUpdateRequest;
 import com.foxifyart.rest_service.dto.response.UserResponse;
 import com.foxifyart.rest_service.entity.Users;
+import com.foxifyart.rest_service.enums.Role;
 import com.foxifyart.rest_service.exception.AppException;
 import com.foxifyart.rest_service.exception.ErrorCode;
 import com.foxifyart.rest_service.mapper.UserMapper;
@@ -11,11 +12,11 @@ import com.foxifyart.rest_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -24,6 +25,7 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     public Users createUser(UserCreationRequest request) {
 
@@ -32,8 +34,11 @@ public class UserService {
         }
         Users user = userMapper.toUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
 
         return userRepository.save(user);
     }
