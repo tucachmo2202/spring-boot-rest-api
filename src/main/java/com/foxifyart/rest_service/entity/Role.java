@@ -1,10 +1,13 @@
 package com.foxifyart.rest_service.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
+
 
 @Entity
 @Getter
@@ -13,13 +16,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Users {
+public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-    private String username;
-    private String password;
+    String name;
+    String desciption;
 
     @ManyToMany
-    Set<Role> roles;
+    Set<Permission> permissions;
 }

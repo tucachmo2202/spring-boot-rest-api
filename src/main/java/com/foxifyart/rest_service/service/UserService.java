@@ -4,7 +4,6 @@ import com.foxifyart.rest_service.dto.request.UserCreationRequest;
 import com.foxifyart.rest_service.dto.request.UserUpdateRequest;
 import com.foxifyart.rest_service.dto.response.UserResponse;
 import com.foxifyart.rest_service.entity.Users;
-import com.foxifyart.rest_service.enums.Role;
 import com.foxifyart.rest_service.exception.AppException;
 import com.foxifyart.rest_service.exception.ErrorCode;
 import com.foxifyart.rest_service.mapper.UserMapper;
@@ -36,9 +35,9 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        HashSet<String> roles = new HashSet<>();
+//        roles.add(Role.USER.name());
+//        user.setRoles(roles);
 
         return userRepository.save(user);
     }
